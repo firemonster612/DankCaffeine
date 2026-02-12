@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import Quickshell.Io
 import qs.Common
 import qs.Services
 import qs.Widgets
@@ -11,7 +10,6 @@ PluginComponent {
 
     // --- State ---
     property bool isActive: false
-    property int inhibitorPid: -1
     property bool restoreOnStartup: pluginData.restoreOnStartup !== undefined
                                     ? pluginData.restoreOnStartup : true
 
@@ -26,7 +24,7 @@ PluginComponent {
 
     function activate() {
         if (isActive) return
-        inhibitProcess.running = true
+        Quickshell.execDetached(["dms", "ipc", "call", "inhibit", "enable"])
         isActive = true
         if (pluginService) {
             pluginService.savePluginData(pluginId, "isActive", true)
@@ -35,36 +33,13 @@ PluginComponent {
     }
 
     function deactivate() {
-        if (!isActive && inhibitorPid <= 0) return
-        if (inhibitorPid > 0) {
-            Quickshell.execDetached(["kill", inhibitorPid.toString()])
-            inhibitorPid = -1
-        }
+        if (!isActive) return
+        Quickshell.execDetached(["dms", "ipc", "call", "inhibit", "disable"])
         isActive = false
         if (pluginService) {
             pluginService.savePluginData(pluginId, "isActive", false)
         }
         ToastService.showInfo("Caffeine", I18n.tr("Screen blanking resumed"))
-    }
-
-    // --- Inhibitor process ---
-    // Uses systemd-inhibit to block idle; no extra packages needed.
-    Process {
-        id: inhibitProcess
-        command: ["systemd-inhibit", "--what=idle", "--who=DankCaffeine",
-                  "--why=User requested via DankCaffeine plugin", "sleep", "infinity"]
-        onStarted: {
-            root.inhibitorPid = processId
-        }
-        onExited: {
-            root.inhibitorPid = -1
-            if (root.isActive) {
-                root.isActive = false
-                if (pluginService) {
-                    pluginService.savePluginData(pluginId, "isActive", false)
-                }
-            }
-        }
     }
 
     // --- Restore state on load ---
@@ -76,8 +51,8 @@ PluginComponent {
 
     // --- Clean up on unload ---
     Component.onDestruction: {
-        if (inhibitorPid > 0) {
-            Quickshell.execDetached(["kill", inhibitorPid.toString()])
+        if (isActive) {
+            Quickshell.execDetached(["dms", "ipc", "call", "inhibit", "disable"])
         }
     }
 

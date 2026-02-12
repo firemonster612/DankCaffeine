@@ -10,7 +10,7 @@ A [DankMaterialShell](https://danklinux.com) plugin that prevents your screen fr
 
 - **DankBar widget** — coffee icon in your bar, click to toggle. Highlights when active.
 - **Persistent state** — optionally restores caffeine state across restarts.
-- **Zero dependencies** — uses `systemd-inhibit` under the hood, no extra packages needed.
+- **Zero dependencies** — uses DMS's built-in idle inhibit API, no extra packages needed.
 
 ## Installation
 
@@ -41,7 +41,6 @@ dms ipc call plugins enable dankCaffeine
 ## Requirements
 
 - DankMaterialShell >= 1.2.0
-- `systemd` (uses `systemd-inhibit`)
 - Any Wayland compositor (niri, Hyprland, Sway, labwc, etc.)
 
 ## Permissions
@@ -50,7 +49,7 @@ dms ipc call plugins enable dankCaffeine
 |------------|--------|
 | `settings_read` | Read caffeine state and user preferences |
 | `settings_write` | Persist toggle state across restarts |
-| `process` | Run `systemd-inhibit` to prevent idle |
+| `process` | Call DMS idle inhibit IPC |
 
 ## Contributing
 
