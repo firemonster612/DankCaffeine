@@ -1,14 +1,14 @@
 {
   "id": "dankCaffeine",
   "name": "DankCaffeine",
-  "description": "Prevents screen from going idle/blanking. Toggle from the bar or Control Center.",
+  "description": "Prevents screen from going idle/blanking. Toggle from the DankBar.",
   "version": "1.0.0",
   "author": "efox",
   "icon": "coffee",
   "type": "widget",
   "component": "./DankCaffeine.qml",
   "settings": "./CaffeineSettings.qml",
-  "capabilities": ["dankbar-widget", "control-center"],
+  "capabilities": ["dankbar-widget"],
   "permissions": ["settings_read", "settings_write", "process"],
   "requires_dms": ">=1.2.0"
 }

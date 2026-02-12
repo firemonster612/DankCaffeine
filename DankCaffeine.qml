@@ -15,16 +15,6 @@ PluginComponent {
     property bool restoreOnStartup: pluginData.restoreOnStartup !== undefined
                                     ? pluginData.restoreOnStartup : true
 
-    // --- Control Center integration ---
-    ccWidgetIcon: isActive ? "coffee" : "coffee_maker"
-    ccWidgetPrimaryText: I18n.tr("Caffeine")
-    ccWidgetSecondaryText: isActive ? I18n.tr("Screen will stay awake") : I18n.tr("Off")
-    ccWidgetIsActive: isActive
-
-    onCcWidgetToggled: {
-        toggle()
-    }
-
     // --- Toggle logic ---
     function toggle() {
         if (isActive) {
